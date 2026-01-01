@@ -1,0 +1,12 @@
+services:
+  toolbox:
+    build: .
+    image: emr-platform-toolbox:latest
+    volumes:
+      - .:/infra
+      # Mapeamento de credenciais da aws
+      - ~/.aws:/root/.aws
+    tty: true
+    stdin_open: true
+    environment:
+      - AWS_PAGER=""
