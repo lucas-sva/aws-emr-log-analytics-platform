@@ -38,6 +38,7 @@ flowchart LR
         subgraph DataLake [Data Lake S3]
             Raw[Bucket Raw]
             Proc[Bucket Processed]
+            Admin[Bucket Admin]
         end
     end
 
@@ -53,10 +54,12 @@ flowchart LR
     %% Conexão Endpoint -> Buckets
     Endpoint -.-> Raw
     Endpoint -.-> Proc
+    Endpoint -.-> Admin
 
     %% Acesso Externo (Apenas Update)
     EMR -.-> NAT
     NAT -.-> Internet
+
 ```
 
 A solução segue o padrão **Lakehouse** com foco em **Zero Trust Networking**:
@@ -93,4 +96,4 @@ Não é necessário instalar Terraform ou AWS CLI na sua máquina. Utilizamos um
 Este repositório serve como material de estudo. Para guias detalhados, acesse:
 
 * **[Wiki do Projeto](../../wiki):** Contém o guia detalhado de configuração de ambiente (Docker Toolbox), manuais de operação e detalhamento da infraestrutura.
-* **[Architecture Decision Records (ADRs)](docs/adr/):** Registros históricos de por que cada tecnologia e padrão de segurança foram escolhidos (ex: Networking, Storage).
+* **[Architecture Decision Records (ADRs)](docs/adr/):** Registros históricos do porquê de cada tecnologia e padrão de segurança foram escolhidos (ex: Networking, Storage).
