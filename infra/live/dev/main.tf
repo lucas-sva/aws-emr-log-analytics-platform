@@ -9,3 +9,11 @@ module "networking" {
   private_subnets_cidr = var.private_subnets_cidr
   availability_zones   = var.availability_zones
 }
+
+module "storage" {
+  source = "../../modules/storage"
+
+  project_name         = var.project_name
+  environment          = var.environment
+  buckets              = var.buckets
+}

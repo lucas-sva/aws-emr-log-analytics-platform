@@ -35,3 +35,9 @@ variable "availability_zones" {
   description = "Zonas de Disponibilidade para distribuir a rede"
   type        = list(string)
 }
+
+# Variáveis storage
+variable "buckets" {
+  description = "Lista de sufixos para os buckets"
+  type        = list(string)
+}

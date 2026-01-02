@@ -91,3 +91,4 @@ Não é necessário instalar Terraform ou AWS CLI na sua máquina. Utilizamos um
 As Decisões de Arquitetura (ADRs) são mantidas junto ao código:
 
 * [ADR-001: Estratégia de Networking e Segurança](docs/adr/001-networking.md)
+* [ADR-002: Estratégia de Armazenamento e Camadas de Dados](docs/adr/002-storage.md)
