@@ -32,7 +32,7 @@ resource "aws_eip" "nat" {
 
 resource "aws_nat_gateway" "this" {
   subnet_id     = aws_subnet.public[0].id
-  allocation_id = aws_eip.nat.id  # O NAT fica na Subnet Pública 1 para ter saída
+  allocation_id = aws_eip.nat.id # O NAT fica na Subnet Pública 1 para ter saída
 }
 
 # Subnets públicas
@@ -87,7 +87,7 @@ resource "aws_route_table" "private" {
   vpc_id = aws_vpc.this.id
 
   route {
-    cidr_block = "0.0.0.0/0"
+    cidr_block     = "0.0.0.0/0"
     nat_gateway_id = aws_nat_gateway.this.id
   }
 
@@ -105,7 +105,7 @@ resource "aws_route_table_association" "private" {
 # VPC endpoint S3
 # O tráfego para S3 não passa pelo NAT ($), vai direto pelo Gateway (Grátis)
 resource "aws_vpc_endpoint" "s3" {
-  vpc_id = aws_vpc.this.id
+  vpc_id       = aws_vpc.this.id
   service_name = "com.amazonaws.${var.aws_region}.s3"
 
   tags = {

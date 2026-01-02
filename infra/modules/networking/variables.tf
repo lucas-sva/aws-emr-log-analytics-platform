@@ -1,9 +1,9 @@
 variable "project_name" {
-  type        = string
+  type = string
 }
 
 variable "environment" {
-  type        = string
+  type = string
 }
 
 variable "aws_region" {
@@ -11,17 +11,17 @@ variable "aws_region" {
 }
 
 variable "vpc_cidr" {
-  type        = string
+  type = string
 }
 
 variable "public_subnets_cidr" {
-  type        = list(string)
+  type = list(string)
 }
 
 variable "private_subnets_cidr" {
-  type        = list(string)
+  type = list(string)
 }
 
 variable "availability_zones" {
-  type        = list(string)
+  type = list(string)
 }

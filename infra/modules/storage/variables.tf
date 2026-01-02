@@ -1,11 +1,11 @@
 variable "project_name" {
-  type        = string
+  type = string
 }
 
 variable "environment" {
-  type        = string
+  type = string
 }
 
 variable "buckets" {
-  type        = list(string)
+  type = list(string)
 }
