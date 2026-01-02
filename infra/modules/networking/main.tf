@@ -7,8 +7,6 @@ terraform {
   }
 }
 
-data "aws_region" "current" {}
-
 #VPC
 resource "aws_vpc" "main" {
   cidr_block           = var.vpc_cidr
@@ -84,7 +82,7 @@ resource "aws_route_table_association" "public" {
 resource "aws_subnet" "private" {
   count             = length(var.private_subnets_cidr)
   vpc_id            = aws_vpc.main.id
-  idr_block         = var.private_subnets_cidr[count.index]
+  cidr_block        = var.private_subnets_cidr[count.index]
   availability_zone = var.availability_zones[count.index]
 
   tags = {
@@ -117,7 +115,7 @@ resource "aws_route_table_association" "private" {
 # O tráfego para S3 não passa pelo NAT ($), vai direto pelo Gateway (Grátis)
 resource "aws_vpc_endpoint" "s3" {
   vpc_id = aws_vpc.main.id
-  service_name = "com.amazonaws.${data.aws_region.current.name}.s3"
+  service_name = "com.amazonaws.${var.aws_region}.s3"
 
   tags = {
     Name = "${var.project_name}-s3-endpoint"
