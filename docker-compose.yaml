@@ -9,4 +9,4 @@ services:
     tty: true
     stdin_open: true
     environment:
-      - AWS_PAGER=""
+      - AWS_PAGER="" # essa variável serve para facilitar a leitura de logs e outputs do CLI

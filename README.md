@@ -3,6 +3,7 @@
 ![Terraform](https://img.shields.io/badge/terraform-%235835CC.svg?style=for-the-badge&logo=terraform&logoColor=white)
 ![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white)
 ![Apache Flink](https://img.shields.io/badge/Apache%20Flink-E6526F?style=for-the-badge&logo=apacheflink&logoColor=white)
+![GitHub Actions](https://img.shields.io/badge/github%20actions-%232671E5.svg?style=for-the-badge&logo=githubactions&logoColor=white)
 
 ## 📋 Overview
 
@@ -64,6 +65,7 @@ A solução segue o padrão **Lakehouse** com foco em **Zero Trust Networking**:
 3.  **Security:** VPC Customizada com Subnets Privadas (sem acesso direto à internet).
     * VPC Endpoints para tráfego S3 (sem NAT Gateway para dados).
     * Criptografia em repouso (KMS) e trânsito (TLS).
+4. **Quality & CI:** Pipeline de Integração Contínua (GitHub Actions) validando segurança e formatação do Terraform a cada commit.
 
 ## 🚀 Quick Start
 
@@ -73,7 +75,7 @@ A solução segue o padrão **Lakehouse** com foco em **Zero Trust Networking**:
 
 ### Como Rodar (Ambiente Isolado)
 
-Não é necessário instalar Terraform ou AWS CLI na sua máquina. Utilizamos um container "Toolbox" para garantir reprodutibilidade.
+Não é necessário instalar Terraform ou AWS CLI na sua máquina. Utilizamos uma **Toolbox** containerizada para garantir reprodutibilidade.
 
 1. **Inicie a Toolbox:**
    ```bash
@@ -86,9 +88,9 @@ Não é necessário instalar Terraform ou AWS CLI na sua máquina. Utilizamos um
     terraform init
     terraform apply
     ```
-## 📚 Documentação Técnica
+## 📚 Documentação
 
-As Decisões de Arquitetura (ADRs) são mantidas junto ao código:
+Este repositório serve como material de estudo. Para guias detalhados, acesse:
 
-* [ADR-001: Estratégia de Networking e Segurança](docs/adr/001-networking.md)
-* [ADR-002: Estratégia de Armazenamento e Camadas de Dados](docs/adr/002-storage.md)
+* **[Wiki do Projeto](../../wiki):** Contém o guia detalhado de configuração de ambiente (Docker Toolbox), manuais de operação e detalhamento da infraestrutura.
+* **[Architecture Decision Records (ADRs)](docs/adr/):** Registros históricos de por que cada tecnologia e padrão de segurança foram escolhidos (ex: Networking, Storage).
