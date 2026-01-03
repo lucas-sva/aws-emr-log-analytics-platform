@@ -1,3 +1,4 @@
+# 1. Rede
 module "networking" {
   source = "../../modules/networking"
 
@@ -10,10 +11,26 @@ module "networking" {
   availability_zones   = var.availability_zones
 }
 
+# 2. Storage
 module "storage" {
   source = "../../modules/storage"
 
   project_name = var.project_name
   environment  = var.environment
   buckets      = var.buckets
+}
+
+# 3. Compute (EMR)
+module "emr" {
+  source = "../../modules/emr"
+
+  project_name = var.project_name
+  environment  = var.environment
+
+  # Networking
+  vpc_id     = module.networking.vpc_id
+  subnet_ids = module.networking.private_subnets # O EMR roda no privado!
+
+  # Storage admin
+  s3_bucket_log_id = module.storage.bucket_names["administrative"]
 }

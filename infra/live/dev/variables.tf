@@ -1,43 +1,46 @@
+# --- Identidade do Projeto ---
 variable "aws_region" {
-  type    = string
-  default = "us-east-2"
+  description = "Região AWS"
+  type        = string
+  default     = "us-east-2"
 }
 
 variable "project_name" {
-  description = "Nome do projeto para taggear recursos"
+  description = "Nome do projeto"
   type        = string
   default     = "emr-log-analytics"
 }
 
 variable "environment" {
-  description = "Ambiente (dev, prod, staging)"
+  description = "Ambiente"
   type        = string
   default     = "dev"
 }
 
-# Variáveis networking
+# --- Networking (estão no tfvars) ---
 variable "vpc_cidr" {
-  description = "Bloco CIDR principal da VPC"
+  description = "CIDR VPC"
   type        = string
 }
 
 variable "public_subnets_cidr" {
-  description = "Lista de CIDRs para subnets públicas (NAT, Load Balancers)"
+  description = "CIDRs Públicas"
   type        = list(string)
 }
 
 variable "private_subnets_cidr" {
-  description = "Lista de CIDRs para subnets privadas (EMR, Lambda)"
+  description = "CIDRs Privadas"
   type        = list(string)
 }
 
 variable "availability_zones" {
-  description = "Zonas de Disponibilidade para distribuir a rede"
+  description = "AZs"
   type        = list(string)
 }
 
-# Variáveis storage
+# --- Storage ---
 variable "buckets" {
-  description = "Lista de sufixos para os buckets"
+  description = "Nomes lógicos dos buckets"
   type        = list(string)
+  default     = ["raw", "processed", "administrative"]
 }

@@ -1,27 +1,34 @@
 variable "project_name" {
-  type = string
+  description = "Project name for tagging resources"
+  type        = string
 }
 
 variable "environment" {
-  type = string
+  description = "Environment context"
+  type        = string
 }
 
 variable "aws_region" {
-  type = string
+  description = "AWS Region to deploy resources"
+  type        = string
 }
 
 variable "vpc_cidr" {
-  type = string
+  description = "CIDR block for the VPC"
+  type        = string
 }
 
 variable "public_subnets_cidr" {
-  type = list(string)
+  description = "List of CIDR blocks for public subnets"
+  type        = list(string)
 }
 
 variable "private_subnets_cidr" {
-  type = list(string)
+  description = "List of CIDR blocks for private subnets"
+  type        = list(string)
 }
 
 variable "availability_zones" {
-  type = list(string)
+  description = "List of Availability Zones to distribute subnets"
+  type        = list(string)
 }

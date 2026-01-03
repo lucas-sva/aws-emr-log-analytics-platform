@@ -13,54 +13,8 @@ Plataforma de Engenharia de Dados *event-driven* projetada para ingerir e analis
 Em cenários de Cibersegurança, detectar ataques de força bruta ou padrões de negação de serviço (DDoS) horas depois do ocorrido é inútil. Este projeto reduz o "Time-to-Insight" processando logs assim que eles chegam ao Data Lake (S3), identificando IPs maliciosos e gerando alertas automáticos.
 
 ## 🏗️ Arquitetura
-```mermaid
-flowchart LR
-    %% Atores e Camadas Externas
-    User([Engenheiro/Dev])
-    Internet((Internet))
 
-    %% Fronteira da AWS
-    subgraph AWS [AWS Cloud: us-east-2]
-        
-        %% Camada de Rede
-        subgraph VPC [VPC Privada]
-            NAT[NAT Gateway]
-            
-            subgraph Private [Subnets Privadas]
-                Lambda[Lambda Trigger]
-                EMR[Cluster EMR]
-            end
-            
-            Endpoint[VPC Endpoint S3]
-        end
-
-        %% Camada de Dados (S3)
-        subgraph DataLake [Data Lake S3]
-            Raw[Bucket Raw]
-            Proc[Bucket Processed]
-            Admin[Bucket Admin]
-        end
-    end
-
-    %% Fluxo de Trabalho
-    User -- 1. Upload Logs --> Raw
-    Raw -- 2. Event Trigger --> Lambda
-    Lambda -- 3. Submit Job --> EMR
-    
-    %% Fluxo de Processamento e Rede
-    EMR -- Processamento --> EMR
-    EMR <== 4. Leitura/Escrita Privada ==> Endpoint
-    
-    %% Conexão Endpoint -> Buckets
-    Endpoint -.-> Raw
-    Endpoint -.-> Proc
-    Endpoint -.-> Admin
-
-    %% Acesso Externo (Apenas Update)
-    EMR -.-> NAT
-    NAT -.-> Internet
-
-```
+![Diagrama de Arquitetura EMR Log Analytics](docs/img/arquitetura-emr.png)
 
 A solução segue o padrão **Lakehouse** com foco em **Zero Trust Networking**:
 1.  **Ingestion:** Amazon S3 (Raw Zone) com triggers via AWS Lambda.
@@ -95,5 +49,5 @@ Não é necessário instalar Terraform ou AWS CLI na sua máquina. Utilizamos um
 
 Este repositório serve como material de estudo. Para guias detalhados, acesse:
 
-* **[Wiki do Projeto](../../wiki):** Contém o guia detalhado de configuração de ambiente (Docker Toolbox), manuais de operação e detalhamento da infraestrutura.
+* **[Wiki do Projeto](../../wiki):** Contém o guia detalhado de configuração de ambiente, manuais de operação e detalhamento da infraestrutura.
 * **[Architecture Decision Records (ADRs)](docs/adr/):** Registros históricos do porquê de cada tecnologia e padrão de segurança foram escolhidos (ex: Networking, Storage).
