@@ -5,8 +5,9 @@ resource "random_string" "suffix" {
 }
 
 resource "aws_s3_bucket" "this" {
-  for_each = toset(var.buckets)
-  bucket   = "${var.project_name}-${var.environment}-${each.value}-${random_string.suffix.result}"
+  for_each      = toset(var.buckets)
+  bucket        = "${var.project_name}-${var.environment}-${each.value}-${random_string.suffix.result}"
+  force_destroy = true
 
   tags = {
     Name        = "${var.project_name}-${each.value}"

@@ -1,16 +1,24 @@
-output "dev_vpc_id" {
-  value = module.networking.vpc_id
-}
-
-output "dev_private_subnets" {
-  value = module.networking.private_subnets
-}
-
-output "dev_public_subnets" {
-  value = module.networking.public_subnets
-}
-
 output "dev_bucket_names" {
   description = "Nomes dos buckets criados no ambiente de dev"
   value       = module.storage.bucket_names
+}
+
+output "emr_cluster_id" {
+  description = "O ID do Cluster EMR criado"
+  value       = module.emr.cluster_id
+}
+
+output "emr_cluster_name" {
+  description = "Nome do Cluster"
+  value       = module.emr.cluster_name
+}
+
+output "emr_master_public_dns" {
+  description = "DNS Público do Master (Vazio se estiver em subnet privada)"
+  value       = module.emr.master_public_dns
+}
+
+output "emr_service_role" {
+  description = "ARN da Role de Serviço usada"
+  value       = module.emr.service_role_arn
 }

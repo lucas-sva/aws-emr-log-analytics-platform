@@ -109,3 +109,24 @@ resource "aws_security_group_rule" "slave_ingress_from_service" {
   source_security_group_id = aws_security_group.service_access.id
   security_group_id        = aws_security_group.slave.id
 }
+
+# O Service Access aceita sinais do Master (Porta 9443)
+resource "aws_security_group_rule" "service_access_ingress_from_master" {
+  type                     = "ingress"
+  from_port                = 9443
+  to_port                  = 9443
+  protocol                 = "tcp"
+  source_security_group_id = aws_security_group.master.id
+  security_group_id        = aws_security_group.service_access.id
+}
+
+# O Service Access aceita sinais dos Slaves (Porta 8443)
+# (Adicionando preventivamente, pois ele provavelmente reclamaria disso em seguida)
+resource "aws_security_group_rule" "service_access_ingress_from_slave" {
+  type                     = "ingress"
+  from_port                = 8443
+  to_port                  = 8443
+  protocol                 = "tcp"
+  source_security_group_id = aws_security_group.slave.id
+  security_group_id        = aws_security_group.service_access.id
+}

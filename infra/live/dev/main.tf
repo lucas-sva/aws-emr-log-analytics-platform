@@ -33,4 +33,6 @@ module "emr" {
 
   # Storage admin
   s3_bucket_log_id = module.storage.bucket_names["administrative"]
+
+  depends_on = [module.networking, module.storage]
 }

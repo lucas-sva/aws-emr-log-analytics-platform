@@ -4,8 +4,14 @@ resource "aws_emr_cluster" "this" {
   service_role  = aws_iam_role.service_role.arn
   applications  = var.applications
 
-  # Url para os logs no S3
+  # Url para os logs no S3 admin
   log_uri = "s3://${var.s3_bucket_log_id}/emr-logs/"
+
+  # Bootstrap: O EMR vai baixar e rodar o script do S3 admin em cada node (Master e Workers)
+  bootstrap_action {
+    name = "InstallDependencies"
+    path = "s3://${var.s3_bucket_log_id}/scripts/init.sh"
+  }
 
   # Configurações de networking e security
   ec2_attributes {
