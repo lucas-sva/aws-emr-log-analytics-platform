@@ -18,13 +18,10 @@ Em cenários de Cibersegurança, o volume de logs gerados pode atingir Terabytes
 
 A solução segue o padrão **Lakehouse** com foco em **Zero Trust Networking**:
 1.  **Ingestion:** Amazon S3 (Raw Zone) com triggers via AWS Lambda.
-<br>
 2.  **Compute:** Cluster EMR efêmero com instâncias Spot (FinOps).
-<br>
 3.  **Security:** VPC Customizada com Subnets Privadas (sem acesso direto à internet).
     * VPC Endpoints para tráfego S3 (sem NAT Gateway para dados).
     * Criptografia em repouso (KMS) e trânsito (TLS).
-<br>
 4. **Quality & CI:** Pipeline de Integração Contínua (GitHub Actions) validando segurança e formatação do Terraform a cada commit.
 
 ## 🚀 Quick Start
