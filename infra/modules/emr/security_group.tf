@@ -1,8 +1,8 @@
 resource "aws_security_group" "master" {
-  name        = "${var.project_name}-${var.environment}-emr-master-sg"
-  description = "Security Group for EMR Master Node"
-  vpc_id      = var.vpc_id
-  revoke_rules_on_delete = true  # correção de deadlock no terraform destroy
+  name                   = "${var.project_name}-${var.environment}-emr-master-sg"
+  description            = "Security Group for EMR Master Node"
+  vpc_id                 = var.vpc_id
+  revoke_rules_on_delete = true # correção de deadlock no terraform destroy
 
   egress {
     from_port   = 0
@@ -17,10 +17,10 @@ resource "aws_security_group" "master" {
 }
 
 resource "aws_security_group" "slave" {
-  name        = "${var.project_name}-${var.environment}-emr-slave-sg"
-  description = "Security Group for EMR Slave Nodes (Core/Task)"
-  vpc_id      = var.vpc_id
-  revoke_rules_on_delete = true  # correção de deadlock no terraform destroy
+  name                   = "${var.project_name}-${var.environment}-emr-slave-sg"
+  description            = "Security Group for EMR Slave Nodes (Core/Task)"
+  vpc_id                 = var.vpc_id
+  revoke_rules_on_delete = true # correção de deadlock no terraform destroy
 
   egress {
     from_port   = 0
@@ -32,10 +32,10 @@ resource "aws_security_group" "slave" {
 
 # OBRIGATÓRIO para clusters em Subnets Privadas.
 resource "aws_security_group" "service_access" {
-  name        = "${var.project_name}-${var.environment}-emr-service-access-sg"
-  description = "Security Group for EMR Service Access (Private Subnets)"
-  vpc_id      = var.vpc_id
-  revoke_rules_on_delete = true  # correção de deadlock no terraform destroy
+  name                   = "${var.project_name}-${var.environment}-emr-service-access-sg"
+  description            = "Security Group for EMR Service Access (Private Subnets)"
+  vpc_id                 = var.vpc_id
+  revoke_rules_on_delete = true # correção de deadlock no terraform destroy
 
   # A AWS gerencia as regras de ingress automaticamente para este SG quando o Cluster é criado,
   # permitindo tráfego da porta 8443/9443 do control plane. Então só precisamos da saída
