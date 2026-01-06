@@ -15,6 +15,7 @@ override.tf.json
 terraform.rc
 __pycache__/
 *.py[cod]
+*.pyc
 *$py.class
 *.so
 .Python
@@ -91,3 +92,5 @@ dmypy.json
 .pyre/
 .pytype/
 cython_debug/
+src/datagen/*.txt
+src/datagen/*.log

@@ -12,17 +12,30 @@ Plataforma de Engenharia de Dados projetada para ingerir e analisar logs de segu
 ### 🎯 Business Case
 Em cenários de Cibersegurança, o volume de logs gerados pode atingir Terabytes rapidamente. Analisar esses dados manualmente é inviável. Este projeto automatiza o processamento massivo de logs armazenados no Data Lake (S3), permitindo a detecção de padrões maliciosos e gerando relatórios consolidados de forma escalável e auditável.
 
-### 🏗️ Arquitetura
+## 🏗️ Arquitetura da Solução
 
 ![Diagrama de Arquitetura EMR Log Analytics](docs/img/arquitetura-emr.png)
 
-A solução segue o padrão **Lakehouse** com foco em **Zero Trust Networking**:
-1.  **Ingestion:** Amazon S3 (Raw Zone) com triggers via AWS Lambda.
-2.  **Compute:** Cluster EMR efêmero com instâncias Spot (FinOps).
-3.  **Security:** VPC Customizada com Subnets Privadas (sem acesso direto à internet).
-    * VPC Endpoints para tráfego S3 (sem NAT Gateway para dados).
-    * Criptografia em repouso (KMS) e trânsito (TLS).
-4. **Quality & CI:** Pipeline de Integração Contínua (GitHub Actions) validando segurança e formatação do Terraform a cada commit.
+A plataforma implementa um **Data Lakehouse** modular na AWS, priorizando segurança e isolamento de recursos. O fluxo de dados segue o modelo de camadas (Medallion Architecture simplificada):
+
+### 1. Camada de Armazenamento (Data Lake)
+Utilizamos o **Amazon S3** segregado em buckets lógicos:
+* **Raw Zone (Bronze):** Recebe os logs brutos (ex: arquivos `.txt` gerados pelo servidor de aplicação). A ingestão é preparada para arquivos imutáveis.
+* **Processed Zone (Silver):** Armazena os dados limpos, tipados e convertidos para **Parquet**, particionados por status code para otimização de leitura.
+* **Administrative Zone:** Armazena artefatos de infraestrutura, como scripts de Bootstrap (`init.sh`) e Jobs Spark (`.py`), além de logs de auditoria do cluster.
+
+### 2. Camada de Processamento (Compute)
+O processamento é realizado via **Amazon EMR (Elastic MapReduce)** versão 7.1.0:
+* **Engine:** Apache Spark para processamento distribuído em memória.
+* **Estratégia FinOps:** Uso de **Instance Fleets** combinando instâncias On-Demand (Master) para estabilidade e Spot (Tasks) para redução de custos.
+* **Bootstrap Actions:** Scripts Shell que rodam na inicialização das máquinas para instalar dependências Python e configurar o ambiente.
+
+### 3. Segurança e Networking (Zero Trust)
+A infraestrutura de rede foi desenhada para não expor dados:
+* **VPC Customizada:** O Cluster EMR reside inteiramente em **Subnets Privadas**, sem IPs públicos.
+* **Saída Controlada:** O acesso à internet (para baixar libs Python) é feito via **NAT Gateway** na subnet pública.
+* **Acesso Interno:** A comunicação com o S3 utiliza **VPC Endpoints** (Gateway), garantindo que o tráfego de dados massivos não saia da rede interna da AWS (reduzindo latência e custo).
+* **Criptografia:** Dados criptografados em repouso (SSE-S3) e trânsito (TLS).
 
 ## 🚀 Quick Start
 
@@ -45,6 +58,7 @@ Não é necessário instalar Terraform ou AWS CLI na sua máquina. Utilizamos um
     terraform init
     terraform apply
     ```
+
 ## 📚 Documentação
 
 Este repositório serve como material de estudo. Para guias detalhados, acesse:
