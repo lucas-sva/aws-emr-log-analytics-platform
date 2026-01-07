@@ -1,10 +1,11 @@
 # AWS EMR Log Analytics Platform
 
 ![Terraform](https://img.shields.io/badge/terraform-%235835CC.svg?style=for-the-badge&logo=terraform&logoColor=white)
-![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white)
+![Amazon S3](https://img.shields.io/badge/Amazon%20S3-569A31?style=for-the-badge&logo=amazons3&logoColor=white)
+![Amazon EMR](https://img.shields.io/badge/Amazon%20EMR-527FFF?style=for-the-badge&logo=amazonaws&logoColor=white)
+![AWS Lambda](https://img.shields.io/badge/AWS%20Lambda-FF9900?style=for-the-badge&logo=awslambda&logoColor=white)
 ![Apache Spark](https://img.shields.io/badge/Apache%20Spark-FDEE21?style=for-the-badge&logo=apachespark&logoColor=black)
 ![GitHub Actions](https://img.shields.io/badge/github%20actions-%232671E5.svg?style=for-the-badge&logo=githubactions&logoColor=white)
-
 ## 📋 Overview
 
 Plataforma de Engenharia de Dados **Event-Driven** projetada para ingerir e analisar logs de segurança em escala. A arquitetura utiliza **Terraform** para provisionamento imutável, **Amazon EMR** para processamento distribuído e **AWS Lambda** para orquestração serverless em tempo real.
