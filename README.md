@@ -7,61 +7,67 @@
 
 ## 📋 Overview
 
-Plataforma de Engenharia de Dados projetada para ingerir e analisar logs de segurança (Web Server Logs) em escala. A arquitetura utiliza **Terraform** para provisionamento de infraestrutura imutável e **Amazon EMR com Apache Spark** para processamento distribuído em lote (Batch), com foco agressivo em otimização de custos (FinOps).
+Plataforma de Engenharia de Dados **Event-Driven** projetada para ingerir e analisar logs de segurança em escala. A arquitetura utiliza **Terraform** para provisionamento imutável, **Amazon EMR** para processamento distribuído e **AWS Lambda** para orquestração serverless em tempo real.
 
 ### 🎯 Business Case
-Em cenários de Cibersegurança, o volume de logs gerados pode atingir Terabytes rapidamente. Analisar esses dados manualmente é inviável. Este projeto automatiza o processamento massivo de logs armazenados no Data Lake (S3), permitindo a detecção de padrões maliciosos e gerando relatórios consolidados de forma escalável e auditável.
-
+Em cenários de Cibersegurança, o tempo de reação é crítico. Analisar logs manualmente é inviável. Este projeto implementa um pipeline onde **o simples upload de um arquivo de log dispara automaticamente** todo o processo de ETL, permitindo a detecção de padrões e geração de relatórios minutos após a ingestão, com custo otimizado via instâncias Spot.
 ## 🏗️ Arquitetura da Solução
 
 ![Diagrama de Arquitetura EMR Log Analytics](docs/img/arquitetura-emr.png)
 
 A plataforma implementa um **Data Lakehouse** modular na AWS, priorizando segurança e isolamento de recursos. O fluxo de dados segue o modelo de camadas (Medallion Architecture simplificada):
 
+A plataforma segue o padrão **Lakehouse** com arquitetura reativa:
+
 ### 1. Camada de Armazenamento (Data Lake)
-Utilizamos o **Amazon S3** segregado em buckets lógicos:
-* **Raw Zone (Bronze):** Recebe os logs brutos (ex: arquivos `.txt` gerados pelo servidor de aplicação). A ingestão é preparada para arquivos imutáveis.
-* **Processed Zone (Silver):** Armazena os dados limpos, tipados e convertidos para **Parquet**, particionados por status code para otimização de leitura.
-* **Administrative Zone:** Armazena artefatos de infraestrutura, como scripts de Bootstrap (`init.sh`) e Jobs Spark (`.py`), além de logs de auditoria do cluster.
+Utilizamos o **Amazon S3** segregado em camadas:
+* **Raw Zone:** Recebe os logs brutos. Configurada com **Event Notifications** para disparar gatilhos.
+* **Processed Zone:** Armazena dados convertidos para **Parquet** (Snappy), particionados para performance de leitura.
+* **Administrative Zone:** Repositório de códigos (Scripts Spark, Bootstraps) e Logs de Auditoria.
 
-### 2. Camada de Processamento (Compute)
-O processamento é realizado via **Amazon EMR (Elastic MapReduce)** versão 7.1.0:
-* **Engine:** Apache Spark para processamento distribuído em memória.
-* **Estratégia FinOps:** Uso de **Instance Fleets** combinando instâncias On-Demand (Master) para estabilidade e Spot (Tasks) para redução de custos.
-* **Bootstrap Actions:** Scripts Shell que rodam na inicialização das máquinas para instalar dependências Python e configurar o ambiente.
+### 2. Camada de Orquestração (Serverless)
+Substituímos a execução manual por automação total via **AWS Lambda**:
+* **Trigger:** Um evento `s3:ObjectCreated` no bucket Raw aciona a função Lambda.
+* **Controller:** A função, escrita em Python (Boto3), identifica o arquivo e submete um Step (Job) dinâmico ao Cluster EMR.
+* **Vantagem:** Custo zero quando ocioso e reação imediata à ingestão de dados.
 
-### 3. Segurança e Networking (Zero Trust)
-A infraestrutura de rede foi desenhada para não expor dados:
-* **VPC Customizada:** O Cluster EMR reside inteiramente em **Subnets Privadas**, sem IPs públicos.
-* **Saída Controlada:** O acesso à internet (para baixar libs Python) é feito via **NAT Gateway** na subnet pública.
-* **Acesso Interno:** A comunicação com o S3 utiliza **VPC Endpoints** (Gateway), garantindo que o tráfego de dados massivos não saia da rede interna da AWS (reduzindo latência e custo).
-* **Criptografia:** Dados criptografados em repouso (SSE-S3) e trânsito (TLS).
+### 3. Camada de Processamento (Compute)
+**Amazon EMR 7.1.0** executando Apache Spark:
+* **Engine:** PySpark utilizando funções nativas (sem dependência de internet para libs externas).
+* **FinOps:** Estratégia de *Instance Fleets* (Master On-Demand + Core Spot) para reduzir custos em até 70%.
+* **Security:** Cluster isolado em **Subnets Privadas**, sem acesso direto à internet (Zero Trust).
 
 ## 🚀 Quick Start
 
-### Pré-requisitos
-* Docker e Docker Compose instalados.
-* Credenciais AWS configuradas em `~/.aws/credentials`.
-
 ### Como Rodar (Ambiente Isolado)
 
-Não é necessário instalar Terraform ou AWS CLI na sua máquina. Utilizamos uma **Toolbox** containerizada para garantir reprodutibilidade.
+Utilizamos uma **Toolbox** Dockerizada para garantir reprodutibilidade.
 
 1. **Inicie a Toolbox:**
    ```bash
    docker compose run --rm toolbox
    ```
 
-2. **Dentro do container, faça o deploy:**
-    ```bash
-    cd infra/live/dev
-    terraform init
-    terraform apply
-    ```
+2. **Deploy da Plataforma:**
+   ```bash
+   cd infra/live/dev
+   terraform init
+   terraform apply -auto-approve
+   ```
+
+
+3. **Teste da Automação (Event-Driven):**
+Basta fazer o upload de um arquivo para a pasta `logs/` do bucket Raw.
+   ```bash
+   # Exemplo via CLI (dentro da toolbox)
+   aws s3 cp src/datagen/sample_access_log.txt s3://<SEU_BUCKET_RAW>/logs/teste_01.txt
+   ```
+   
+*O Lambda detectará o arquivo e iniciará o processamento no EMR automaticamente.*
 
 ## 📚 Documentação
 
 Este repositório serve como material de estudo. Para guias detalhados, acesse:
 
 * **[Wiki do Projeto](../../wiki):** Contém o guia detalhado de configuração de ambiente, manuais de operação e detalhamento da infraestrutura.
-* **[Architecture Decision Records (ADRs)](docs/adr/):** Registros históricos do porquê de cada tecnologia e padrão de segurança foram escolhidos (ex: Networking, Storage, compute-engine).
+* **[Architecture Decision Records (ADRs)](docs/adr/):** Histórico de decisões (ex: Por que Lambda? Por que Spot Instances?).

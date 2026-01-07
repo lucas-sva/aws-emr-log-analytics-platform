@@ -1,4 +1,3 @@
-# --- Identidade do Projeto ---
 variable "aws_region" {
   description = "Região AWS"
   type        = string
@@ -15,6 +14,16 @@ variable "environment" {
   description = "Ambiente"
   type        = string
   default     = "dev"
+}
+
+variable "tags" {
+  description = "Mapa de tags padrão para aplicar em todos os recursos"
+  type        = map(string)
+  default = {
+    Project   = "EMR-Log-Analytics"
+    ManagedBy = "Terraform"
+    Owner     = "Data Engineering"
+  }
 }
 
 # --- Networking (estão no tfvars) ---
@@ -38,7 +47,6 @@ variable "availability_zones" {
   type        = list(string)
 }
 
-# --- Storage ---
 variable "buckets" {
   description = "Nomes lógicos dos buckets"
   type        = list(string)
